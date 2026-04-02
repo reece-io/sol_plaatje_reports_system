@@ -1,0 +1,27 @@
+{% if messages %}
+    {% for message in messages %}
+        <div style="padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 20px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h2>Reported Faults</h2>
+<table border="1" style="width:100%; text-align:left;">
+    <tr>
+        <th>Nature</th>
+        <th>Location</th>
+        <th>Current Status</th>
+    </tr>
+    {% for fault in faults %}
+    <tr>
+        <td>{{ fault.nature }}</td>
+        <td>{{ fault.location }}</td>
+        <td><strong>{{ fault.status }}</strong></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No faults reported yet.</td></tr>
+    {% endfor %}
+</table>
+<br>
+<a href="{% url 'home' %}">Return to Home</a>

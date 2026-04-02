@@ -1,0 +1,7 @@
+<h2>Log a New Service Fault</h2>
+<form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Submit Report</button>
+</form>
+<br>
+<a href="{% url 'home' %}">Return to Home</a>
