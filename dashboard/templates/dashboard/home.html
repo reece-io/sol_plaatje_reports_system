@@ -1,6 +1,436 @@
-<h1>Sol Plaatje Service Portal</h1>
-<p>Welcome. Please choose an option below:</p>
-<ul>
-    <li><a href="{% url 'reportform' %}">Report a New Fault</a></li>
-    <li><a href="{% url 'status_page' %}">View Repair Status</a></li>
-</ul>
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+        body{
+            background-image: 
+            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url("{% static 'dashboard/images/sol_logo.jpg' %}");
+            background-size: contain;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        /* Adding a semi-transparent box */
+        .content-container {
+            background-color: rgba(238, 238, 238, 0.8);
+            margin: 50px;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .hero-section {
+    position: relative;
+    /* Use the same static image path you set up earlier */
+    background-image: url("{% static 'dashboard/images/your_bg.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    height: 400px; /* Gives the page a bold start */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+.hero-logo {
+    width: 120px;            /* Adjust this size based on your preference */
+    height: auto;           /* Maintains the aspect ratio */
+    margin-bottom: 20px;    /* Space between the logo and the title */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); /* Gives it a slight lift */
+    
+    /* If your logo has a white background and you want it to blend in, 
+       you can use 'mix-blend-mode: multiply;' or ensure it's a PNG. */
+}
+
+/* Ensure the hero-content stays centered with the new image */
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* The Overlay: This is the secret to "Safety" and "Visibility" */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Tint the image darker for contrast */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2; /* Sits above the overlay */
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hero-stats i {
+    color: #3498db; /* A bright "Action" blue */
+    margin-right: 5px;
+}
+
+.action-container {
+    max-width: 1100px;
+    margin: -50px auto 40px; /* Pulls the cards slightly over the hero section for a modern look */
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #edf2f7;
+    background-color: rgba(255, 255, 255, 0.98); /* Almost solid white */
+    backdrop-filter: blur(10px); /* Optional: keeps a soft feel */
+    border: 1px solid #ffffff; /* White border creates a "highlight" edge */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* "Lifts" the card off the logo */
+    background-clip: padding-box;
+    box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+        0 4px 6px -2px rgba(0, 0, 0, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* Inner highlight */
+}
+
+/* Hover Effect: Visual Feedback */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    border-color: #3498db;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: #3498db;
+    background: #ebf8ff;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.card p {
+    font-size: 0.95rem;
+    color: #718096;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-btn {
+    font-weight: bold;
+    color: #3498db;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.contact-section {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 30px;
+    
+}
+
+.section-header h2 {
+        color: black;
+        -webkit-text-stroke: 1px rgb(255, 255, 255);
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.section-header p {
+        color: black;
+        -webkit-text-stroke: 0.5px rgb(255, 255, 255);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.contact-item {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    border: 1px solid #edf2f7;
+    transition: background 0.3s;
+    background-color: rgba(255, 255, 255, 0.98); /* Almost solid white */
+    backdrop-filter: blur(10px); /* Optional: keeps a soft feel */
+    border: 1px solid #ffffff; /* White border creates a "highlight" edge */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* "Lifts" the card off the logo */
+}
+
+.contact-item:hover {
+    background: #f8fbff;
+}
+
+.dept-icon {
+    background: #3498db;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0; /* Prevents icon from squishing */
+}
+
+.dept-info h4 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.dept-info a {
+    display: block;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+    transition: color 0.2s;
+}
+
+.phone {
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.phone:hover { color: #3498db; }
+
+.email {
+    color: #718096;
+}
+
+.email:hover { color: #3498db; text-decoration: underline; }
+
+.form-card {
+    background-color: rgba(255, 255, 255, 0.98); /* Almost solid white */
+    backdrop-filter: blur(10px); /* Optional: keeps a soft feel */
+    border: 1px solid #ffffff; /* White border creates a "highlight" edge */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* "Lifts" the card off the logo */
+}
+
+/* Ensure text inside these cards is high-contrast */
+.card h3, .dept-info h4 {
+    color: #1a202c; /* Deep dark grey/black */
+}
+
+.card p, .dept-info p {
+    color: #4a5568; /* Solid medium grey */
+}
+
+/* Search Bar Styling */
+.search-container {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.search-container i {
+    color: #718096;
+    margin-right: 15px;
+}
+
+.search-container input {
+    border: none;
+    width: 100%;
+    font-size: 1rem;
+    outline: none;
+    color: #2d3748;
+}
+
+/* Cleanup: Remove the old transparent content boxes */
+.content-container {
+    display: none; /* Hide the old wireframe boxes */
+}
+    </style>
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sol Plaatje Service Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+
+<body>
+    <header class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+           <img src="{% static 'dashboard/images/logo.jpg' %}" alt="Sol Plaatje Logo" class="hero-logo"> 
+            <h1>Sol Plaatje Service Portal</h1>
+            <p>Reliable service delivery for the Sol Plaatje community. Report issues and track their status' in real-time.</p>
+
+            <div class="hero-stats">
+                <span><i class="fas fa-check-circle"></i> Official Portal</span>
+                <span><i class="fas fa-clock"></i> 24/7 Reporting</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="action-container">
+        <div class="action-grid">
+            <a href="{% url 'reportform' %}" class="card">
+                <div class="card-icon"><i class="fas fa-file-signature"></i></div>
+                <div class="card-text">
+                    <h3>Report a New Fault</h3>
+                    <p>Quickly log water, electricity, or road issues directly to our team.</p>
+                </div>
+                <span class="card-btn">Start Report <i class="fas fa-arrow-right"></i></span>
+            </a>
+
+            <a href="{% url 'status_page' %}" class="card">
+                <div class="card-icon"><i class="fas fa-clipboard-list"></i></div>
+                <div class="card-text">
+                    <h3>View Repair Status</h3>
+                    <p>Track progress and see estimated fix times for your reports.</p>
+                </div>
+                <span class="card-btn">Track Status <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="section-header">
+            <h2><i class="fas fa-headset"></i> Emergency & Service Directory</h2>
+            <p><b><i>Direct lines for departmental support and 24/7 service assistance.</i></b></p>
+        </div>
+
+        <div class="contact-grid">
+
+        <div class="contact-item">
+
+            <div class="dept-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+
+            <div class="dept-info">
+
+                <h4>Accounts & Billing</h4>
+
+                <a href="tel:0538306551" class="phone">053 830 6551</a>
+
+                <a href="mailto:sopenshaw@solplaatje.org.za" class="email">sopenshaw@solplaatje.org.za</a>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="contact-item">
+
+            <div class="dept-icon"><i class="fas fa-bolt"></i></div>
+
+            <div class="dept-info">
+
+                <h4>Electricity Services</h4>
+
+                <a href="tel:0538306111" class="phone">053 830 6111</a>
+
+                <a href="mailto:CRoom@solplaatje.org.za" class="email">CRoom@solplaatje.org.za</a>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="contact-item">
+
+            <div class="dept-icon"><i class="fas fa-road"></i></div>
+
+            <div class="dept-info">
+
+                <h4>Roads & Stormwater</h4>
+
+                <a href="tel:0538306111" class="phone">053 830 6111</a>
+
+                <a href="mailto:CRoom@solplaatje.org.za" class="email">CRoom@solplaatje.org.za</a>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="contact-item">
+
+            <div class="dept-icon"><i class="fas fa-truck-pickup"></i></div>
+
+            <div class="dept-info">
+
+                <h4>General Service Delivery</h4>
+
+                <a href="tel:0538306111" class="phone">053 830 6111</a>
+            </div>
+    </section>
+</body>
+</html>
+</html>

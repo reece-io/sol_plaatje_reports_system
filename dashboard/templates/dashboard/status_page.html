@@ -1,3 +1,165 @@
+<style>
+    /* Put all your CSS here so it loads every time, regardless of messages */
+    table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
+    .badge-logged { background-color: #f0f0f0; color: #666; }
+    .badge-progress { background-color: #fff3cd; color: #856404; }
+    .badge-resolved { background-color: #d4edda; color: #155724; }
+    td i {
+    width: 20px; /* Ensures all icons take up the same horizontal space */
+    text-align: center;
+    vertical-align: middle;
+}
+
+body {
+    background-color: #f4f7f6; /* Light grey background makes the white table "pop" */
+    padding: 40px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* The Table Card */
+table {
+    width: 100%;
+    border-collapse: separate; /* Required for rounded corners */
+    border-spacing: 0;
+    background-color: #ffffff;
+    border-radius: 12px; /* Smooth rounded corners */
+    overflow: hidden; /* Ensures background colors don't bleed past corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Soft shadow for depth */
+}
+
+/* Header Styling */
+th {
+    background-color: #f8f9fa;
+    color: #5d6d7e;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 16px;
+    border-bottom: 2px solid #edf2f7;
+    text-align: left;
+}
+
+/* Row Styling */
+td {
+    padding: 16px;
+    color: #4a5568;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+/* Hover effect to help the user track which row they are looking at */
+tbody tr:hover {
+    background-color: #f9fbff;
+    transition: background-color 0.2s ease;
+}
+
+/* Remove border from the last row to keep the rounded bottom clean */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Modernizing the "Return Home" link into a button */
+a[href*="home"] {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+a[href*="home"]:hover {
+    background-color: #2980b9;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+}
+
+.navbar {
+    background-color: #2c3e50; /* Dark, professional navy */
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: #bdc3c7;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: white;
+}
+
+/* Ensure your table container has some top margin now that the navbar is there */
+.table-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+</style>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{% url 'home' %}" class="nav-logo">
+            <i class="fas fa-city"></i> Sol Plaatje Portal
+        </a>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Dashboard</a></li>
+            <li><a href="{% url 'status_page' %}" class="active">View Faults</a></li>
+            <li><a href="{% url 'reportform' %}">Report New Fault</a></li>
+        </ul>
+    </div>
+</nav>
+<body>
+<div class="table-container">
+    <h2>Reported Faults</h2>
+    <table>
+        </table>
+</div>
+
 {% if messages %}
     {% for message in messages %}
         <div style="padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 20px;">
@@ -6,22 +168,58 @@
     {% endfor %}
 {% endif %}
 
-<h2>Reported Faults</h2>
-<table border="1" style="width:100%; text-align:left;">
-    <tr>
-        <th>Nature</th>
-        <th>Location</th>
-        <th>Current Status</th>
-    </tr>
-    {% for fault in faults %}
-    <tr>
-        <td>{{ fault.nature }}</td>
-        <td>{{ fault.location }}</td>
-        <td><strong>{{ fault.status }}</strong></td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="3">No faults reported yet.</td></tr>
-    {% endfor %}
+<table>
+    <thead>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <tr>
+            <th>Ref #</th>
+            <th>Nature</th>
+            <th>Location</th>
+            <th>Current Status</th>
+            <th>Date Reported</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        
+        {% for fault in reported_faults %}
+        
+        <tr>
+            <td style="font-weight: bold; color: #555;">{{ fault.ref_number }}</td>
+            <td>
+    {% if fault.nature == "Water" %}
+        <i class="fas fa-droplet" style="color: #3498db; margin-right: 8px;"></i>
+    {% elif fault.nature == "Power" %}
+        <i class="fas fa-bolt" style="color: #f1c40f; margin-right: 8px;"></i>
+    {% elif fault.nature == "Roads" %}
+        <i class="fas fa-road" style="color: #7f8c8d; margin-right: 8px;"></i>
+    {% else %}
+        <i class="fas fa-circle-exclamation" style="color: #e74c3c; margin-right: 8px;"></i>
+    {% endif %}
+    
+    {{ fault.nature }}
+</td>
+            <td>{{ fault.location }}</td>
+            <td>
+                {% if fault.status == "Logged" %}
+                    <span class="badge badge-logged">{{ fault.status }}</span>
+                {% elif fault.status == "In Progress" %}
+                    <span class="badge badge-progress">{{ fault.status }}</span>
+                {% elif fault.status == "Resolved" %}
+                    <span class="badge badge-resolved">{{ fault.status }}</span>
+                {% else %}
+                    <span class="badge">{{ fault.status }}</span>
+                {% endif %}
+            </td>
+            <td>{{ fault.created_at|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" style="text-align: center;">No faults reported yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
 </table>
 <br>
-<a href="{% url 'home' %}">Return to Home</a>
+</body>
